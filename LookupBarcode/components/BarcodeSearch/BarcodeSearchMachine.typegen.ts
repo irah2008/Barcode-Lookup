@@ -30,6 +30,7 @@ export interface Typegen0 {
   missingImplementations: {
     actions:
       | "setContextParams"
+      | "setExistingValue"
       | "setContextError"
       | "setContextSearchText"
       | "openRecordInline"
@@ -56,6 +57,7 @@ export interface Typegen0 {
     setContextLookupValue: "done.invoke.BarcodeLookupMachine.searching:invocation[0]";
     setContextParams: "done.invoke.BarcodeLookupMachine.loadingParams:invocation[0]";
     setContextSearchText: "SEARCH";
+    setExistingValue: "done.invoke.BarcodeLookupMachine.loadingParams:invocation[0]";
     setSearchError: "done.invoke.BarcodeLookupMachine.searching:invocation[0]";
   };
   eventsCausingServices: {

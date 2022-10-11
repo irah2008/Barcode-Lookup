@@ -47,7 +47,7 @@ export class LookupBarcode
    */
    public updateView (context: ComponentFramework.Context<IInputs>): void {
     // RENDER React Component
-    var barCodeSearcher:IBarCodeLookupMachineContext =  {pcfContext:context};
+    var barCodeSearcher:IBarCodeLookupMachineContext =  {pcfContext:context,OnChange:this.onChange};
     ReactDOM.render(React.createElement(BarcodeSearcher,barCodeSearcher),this.container); 
   }
 

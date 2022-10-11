@@ -1,0 +1,20 @@
+.searchBtnCls {
+  visibility: hidden;
+}
+#inputText ::placeholder {
+  font-weight: 600;
+}
+#inputText :hover ::placeholder {
+  font-weight: 200;
+}
+
+.removeSelectedBtn {
+  visibility: hidden;
+  color: black;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.removeSelectedBtn :hover{
+  background-color: lightgrey;
+}
