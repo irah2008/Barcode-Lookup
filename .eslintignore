@@ -1,0 +1,9 @@
+node_modules
+out
+.vscode
+.git
+
+*.typegen.ts
+
+# generated directory
+**/generated

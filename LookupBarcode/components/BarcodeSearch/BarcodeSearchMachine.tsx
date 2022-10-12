@@ -1,5 +1,4 @@
-import { assign, createMachine, actions } from "xstate";
-import { LookupBarcode } from "../..";
+import {  createMachine } from "xstate";
 import { IInputs } from "../../generated/ManifestTypes";
 
 export interface IBarCodeLookupMachineContext {

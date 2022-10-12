@@ -38,7 +38,7 @@ export const BarcodeSearcher = (
     send({ type: "SEARCH", searchText: "" });
   };
   const handleOnClickSelectedItem = (e: React.MouseEvent<HTMLLabelElement>) => {
-    var selectedItem = state.context.selectedValue;
+    const selectedItem = state.context.selectedValue;
     if (selectedItem) {
       state.context.pcfContext.navigation.openForm({
         entityName: selectedItem.entityType,
@@ -147,7 +147,7 @@ export const BarcodeSearcher = (
                 iconProps={{
                   iconName: isMobileApp ? "GenericScan" : "Search",
                 }}
-                className={mergeStyles({ color: "black", paddingLeft: "50%" })}
+                className={mergeStyles({ color: "black",width:'100%', paddingLeft: "50%" ,':hover':{'background-color':'white'}})}
                 onClick={isMobileApp ? handleOnMobileClick : handleOnWebClick}
               ></IconButton>
             </StackItem>

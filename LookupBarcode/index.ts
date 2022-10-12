@@ -15,7 +15,6 @@ export class LookupBarcode
   /**
    * Empty constructor.
    */
-  constructor() {}
 
   /**
    * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
@@ -47,7 +46,7 @@ export class LookupBarcode
    */
    public updateView (context: ComponentFramework.Context<IInputs>): void {
     // RENDER React Component
-    var barCodeSearcher:IBarCodeLookupMachineContext =  {pcfContext:context,OnChange:this.onChange};
+    const barCodeSearcher:IBarCodeLookupMachineContext =  {pcfContext:context,OnChange:this.onChange};
     ReactDOM.render(React.createElement(BarcodeSearcher,barCodeSearcher),this.container); 
   }
 
@@ -74,18 +73,4 @@ export class LookupBarcode
   public destroy (): void {
     // Add code to cleanup control if necessary
   }
-
-  public getBarcode(context: ComponentFramework.Context<IInputs>): void {
-		try {
-			context.device
-				.getBarcodeValue()
-				.then((barcode) => {
-          context.webAPI.retrieveMultipleRecords('account',)
-					alert(barcode);
-				})
-				.catch((er) => console.log(er));
-		} catch (err) {
-			alert(err);
-		}
-	}
 }

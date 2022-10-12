@@ -28,7 +28,7 @@ export const useBarcodeLookupMachine = (
       }),
       setExistingValue: assign({
         selectedValue: (ctx, e) => {
-          var defaultValue =
+          const defaultValue =
             ctx.pcfContext.parameters.barcodeLookupProperty.raw;
           if (defaultValue.length > 0) {
             return {
@@ -78,9 +78,9 @@ export const useBarcodeLookupMachine = (
     },
     services: {
       loadParams: async (ctx) => {
-        let inputProps = ctx.pcfContext.parameters.configProperty.raw;
+        const inputProps = ctx.pcfContext.parameters.configProperty.raw;
         if (inputProps) {
-          let lookupProps: ILookupProps = JSON.parse(
+          const lookupProps: ILookupProps = JSON.parse(
             ctx.pcfContext.parameters.configProperty.raw ?? ""
           ) as ILookupProps;
 
@@ -90,13 +90,13 @@ export const useBarcodeLookupMachine = (
       },
       searchByValue: async (ctx, e): Promise<ILookupValue[]> => {
         let returnValue: ILookupValue[] = [];
-        let pcfContext = ctx.pcfContext;
-        let lookupProps = ctx.lookupProps;
+        const pcfContext = ctx.pcfContext;
+        const lookupProps = ctx.lookupProps;
         if (lookupProps) {
-          let clientType = pcfContext.client.getClient();
+          const clientType = pcfContext.client.getClient();
           if (clientType == "Mobile") {
-            let searchText = await pcfContext.device.getBarcodeValue();
-            let retrievedEntities =
+            const searchText = await pcfContext.device.getBarcodeValue();
+            const retrievedEntities =
               await pcfContext.webAPI.retrieveMultipleRecords(
                 lookupProps.entityName,
                 `?$select=${lookupProps.nameColumn}&$filter=contains(${lookupProps.fieldtoSearch},'${searchText}')`
@@ -109,7 +109,7 @@ export const useBarcodeLookupMachine = (
               };
             });
           } else {
-            let returnValuefromLookup =
+            const returnValuefromLookup =
               await ctx.pcfContext.utils.lookupObjects({
                 allowMultiSelect: false,
                 defaultEntityType: ctx.lookupProps?.entityName ?? "",
