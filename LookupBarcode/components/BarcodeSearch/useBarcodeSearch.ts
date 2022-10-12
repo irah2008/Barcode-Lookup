@@ -24,8 +24,7 @@ export const useBarcodeLookupMachine = (
     actions: {
       setContextSearchText: (ctx, e) => assign({ searchFilter: e.searchText }),
       clearRecordfromLookup: assign({
-        selectedValue: (ctx, e) => undefined
-        
+        selectedValue: (ctx, e) => undefined,
       }),
       setExistingValue: assign({
         selectedValue: (ctx, e) => {

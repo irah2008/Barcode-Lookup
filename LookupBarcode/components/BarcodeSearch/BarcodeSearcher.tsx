@@ -4,12 +4,8 @@ import { IInputs } from "../../generated/ManifestTypes";
 import React = require("react");
 import {
   IconButton,
-  IIconProps,
-  Link,
+  Label,
   mergeStyles,
-  Persona,
-  PersonaPresence,
-  PersonaSize,
   Stack,
   StackItem,
 } from "@fluentui/react";
@@ -41,6 +37,15 @@ export const BarcodeSearcher = (
   const handleOnMobileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     send({ type: "SEARCH", searchText: "" });
   };
+  const handleOnClickSelectedItem = (e: React.MouseEvent<HTMLLabelElement>) => {
+    var selectedItem = state.context.selectedValue;
+    if (selectedItem) {
+      state.context.pcfContext.navigation.openForm({
+        entityName: selectedItem.entityType,
+        entityId: selectedItem.id,
+      });
+    }
+  };
 
   const handleRemoveLookup = (e: React.MouseEvent<HTMLButtonElement>) => {
     send({ type: "CLEAR-RECORD" });
@@ -62,65 +67,92 @@ export const BarcodeSearcher = (
           ":hover": { border: "solid 1px" },
           ":hover .searchBtnCls": { visibility: "visible" },
           ":hover .removeSelectedBtn": { visibility: "visible" },
+          marginLeft: "5px",
         })}
       >
-        <Stack horizontal={true}>
-          {state.context.selectedValue && (
-            <StackItem grow={12}>
-              <Stack horizontal={true}>
-                <StackItem
-                  className={mergeStyles({
-                    fontWeight: 600,
-                    color: "rgb(17, 96, 183)",
-                    overflowY: "hidden",
-                    padding: "2%",
-                    ":hover": {
-                      "text-decoration": "underline",
-                      cursor: "pointer",
-                    },
-                  })}
-                  id={state.context.selectedValue.id}
+        {state.context.errorMessage && (
+          <Label className={mergeStyles({ color: "red" })}>
+            Error occurred while loading the component
+          </Label>
+        )}
+        {!state.context.errorMessage && (
+          <Stack
+            horizontal={true}
+            className={mergeStyles({ maxWidth: "100%" })}
+          >
+            {state.context.selectedValue && (
+              <StackItem grow={10} className={mergeStyles({ maxWidth: "80%" })}>
+                <Stack
+                  horizontal={true}
+                  className={mergeStyles({ maxWidth: "100%" })}
                 >
-                  {state.context.selectedValue.name}
-                </StackItem>
-                <StackItem>
-                  <IconButton
-                    iconProps={{ iconName: "Cancel" }}
-                    onClick={handleRemoveLookup}
-                    className="removeSelectedBtn"
-                  ></IconButton>
-                </StackItem>
-              </Stack>
-            </StackItem>
-          )}
-          <StackItem grow={12}>
-            {!state.context.selectedValue && (
-              <input
-                type="text"
-                id="inputText"
-                className={mergeStyles({
-                  width: "95%",
-                  height: "85%",
-                  border: "none",
-                })}
-                ref={inputRef}
-                disabled={isMobileApp}
-                placeholder="---"
-                onMouseEnter={OnTextBoxEnter}
-                onMouseLeave={OnTextBoxEnter}
-              />
+                  <StackItem
+                    grow={8}
+                    className={mergeStyles({ maxWidth: "80%" })}
+                  >
+                    <Label
+                      onClick={handleOnClickSelectedItem}
+                      className={mergeStyles({
+                        fontWeight: 600,
+                        color: "rgb(17, 96, 183)",
+                        overflow: "hidden",
+                        padding: "2%",
+                        ":hover": {
+                          "text-decoration": "underline",
+                          cursor: "pointer",
+                        },
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      })}
+                      id={state.context.selectedValue.id}
+                    >
+                      {state.context.selectedValue.name}
+                    </Label>
+                  </StackItem>
+                  <StackItem grow={2}>
+                    <IconButton
+                      iconProps={{ iconName: "Cancel" }}
+                      onClick={handleRemoveLookup}
+                      className="removeSelectedBtn"
+                    ></IconButton>
+                  </StackItem>
+                </Stack>
+              </StackItem>
             )}
-          </StackItem>
-          <StackItem align="end" grow={1} className="searchBtnCls">
-            <IconButton
-              iconProps={{
-                iconName: isMobileApp ? "GenericScan" : "Search",
-              }}
-              className={mergeStyles({ color: "black" })}
-              onClick={isMobileApp ? handleOnMobileClick : handleOnWebClick}
-            ></IconButton>
-          </StackItem>
-        </Stack>
+
+            {!state.context.selectedValue && (
+              <StackItem grow={10}>
+                <input
+                  type="text"
+                  id="inputText"
+                  className={mergeStyles({
+                    width: "95%",
+                    height: "85%",
+                    border: "none",
+                  })}
+                  ref={inputRef}
+                  disabled={isMobileApp}
+                  placeholder="---"
+                  onMouseEnter={OnTextBoxEnter}
+                  onMouseLeave={OnTextBoxEnter}
+                />
+              </StackItem>
+            )}
+            <StackItem
+              align="end"
+              grow={1}
+              className={!isMobileApp ? "searchBtnCls" : ""}
+            >
+              <IconButton
+                iconProps={{
+                  iconName: isMobileApp ? "GenericScan" : "Search",
+                }}
+                className={mergeStyles({ color: "black", paddingLeft: "50%" })}
+                onClick={isMobileApp ? handleOnMobileClick : handleOnWebClick}
+              ></IconButton>
+            </StackItem>
+          </Stack>
+        )}
       </div>
     </>
   );
