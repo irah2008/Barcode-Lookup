@@ -3,10 +3,10 @@ import {
   IBarCodeLookupMachineContext,
   ILookupProps,
   ILookupValue,
-} from "./BarcodeSearchMachine";
-import { useMachine } from "@xstate/react";
-import { assign } from "xstate";
-import { send } from "xstate/lib/actions";
+} from './BarcodeSearchMachine';
+import { useMachine } from '@xstate/react';
+import { assign } from 'xstate';
+import { send } from 'xstate/lib/actions';
 
 export const useBarcodeLookupMachine = (
   initialContext: IBarCodeLookupMachineContext
@@ -34,7 +34,7 @@ export const useBarcodeLookupMachine = (
             return {
               entityType: defaultValue[0].entityType,
               id: defaultValue[0].id,
-              name: defaultValue[0].name ?? "",
+              name: defaultValue[0].name ?? '',
             };
           }
           return undefined;
@@ -54,20 +54,21 @@ export const useBarcodeLookupMachine = (
             allowMultiSelect: false,
             defaultEntityType: ctx.lookupProps.entityName,
             defaultViewId: ctx.lookupProps.defaultviewId,
-            entityTypes: [ctx.lookupProps.defaultviewId],
+            entityTypes: [ctx.lookupProps.entityName],
             viewIds: [],
+            //@ts-ignore
             searchText: ctx.searchFilter,
           });
         }
       },
       setContextError: assign({
         errorMessage: (context, e) =>
-          e.type === "SEARCH"
-            ? "Params passed to the control is incorrect"
+          e.type === 'SEARCH'
+            ? 'Params passed to the control is incorrect'
             : ((e.data as any).message as string),
       }),
       setContextLookupValue: assign({
-        selectedValue: (ctx, e) => e.data[0],
+        selectedValue: (ctx, e) => (e.data ? e.data[0] : undefined),
       }),
       setContextParams: assign({
         lookupProps: (ctx, e) => e.data,
@@ -81,7 +82,7 @@ export const useBarcodeLookupMachine = (
         const inputProps = ctx.pcfContext.parameters.configProperty.raw;
         if (inputProps) {
           const lookupProps: ILookupProps = JSON.parse(
-            ctx.pcfContext.parameters.configProperty.raw ?? ""
+            ctx.pcfContext.parameters.configProperty.raw ?? ''
           ) as ILookupProps;
 
           return lookupProps;
@@ -94,7 +95,7 @@ export const useBarcodeLookupMachine = (
         const lookupProps = ctx.lookupProps;
         if (lookupProps) {
           const clientType = pcfContext.client.getClient();
-          if (clientType == "Mobile") {
+          if (clientType === 'Mobile') {
             const searchText = await pcfContext.device.getBarcodeValue();
             const retrievedEntities =
               await pcfContext.webAPI.retrieveMultipleRecords(
@@ -103,26 +104,27 @@ export const useBarcodeLookupMachine = (
               );
             returnValue = retrievedEntities.entities.map((x) => {
               return {
-                entityType: x.LogicalName,
+                entityType: lookupProps.entityName,
                 name: lookupProps ? x[lookupProps.nameColumn] : "",
-                id: x[`${x.LogicalName}id`],
+                id: x[`${lookupProps.entityName}id`]
               };
             });
           } else {
             const returnValuefromLookup =
               await ctx.pcfContext.utils.lookupObjects({
                 allowMultiSelect: false,
-                defaultEntityType: ctx.lookupProps?.entityName ?? "",
-                defaultViewId: ctx.lookupProps?.defaultviewId ?? "",
-                entityTypes: [ctx.lookupProps?.entityName ?? ""],
-                viewIds: [ctx.lookupProps?.defaultviewId ?? ""],
-                searchText: e.searchText ?? "",
+                defaultEntityType: ctx.lookupProps?.entityName ?? '',
+                defaultViewId: ctx.lookupProps?.defaultviewId ?? '',
+                entityTypes: [ctx.lookupProps?.entityName ?? ''],
+                viewIds: [ctx.lookupProps?.defaultviewId ?? ''],
+                //@ts-ignore
+                searchText: e.searchText ?? '',
               });
             if (returnValuefromLookup.length > 0) {
               returnValue = returnValuefromLookup.map((x) => {
                 return {
                   entityType: x.entityType,
-                  name: x.name ?? "",
+                  name: x.name ?? '',
                   id: x.id,
                 };
               });

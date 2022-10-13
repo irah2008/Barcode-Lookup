@@ -54,7 +54,9 @@ export interface Typegen0 {
       | 'SEARCH'
       | 'error.platform.BarcodeLookupMachine.loadingParams:invocation[0]'
       | 'error.platform.BarcodeLookupMachine.searching:invocation[0]';
-    setContextLookupValue: 'done.invoke.BarcodeLookupMachine.searching:invocation[0]';
+    setContextLookupValue:
+      | 'SET-RECORD'
+      | 'done.invoke.BarcodeLookupMachine.searching:invocation[0]';
     setContextParams: 'done.invoke.BarcodeLookupMachine.loadingParams:invocation[0]';
     setContextSearchText: 'SEARCH';
     setExistingValue: 'done.invoke.BarcodeLookupMachine.loadingParams:invocation[0]';

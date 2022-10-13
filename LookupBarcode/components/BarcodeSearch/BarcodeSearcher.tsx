@@ -1,15 +1,18 @@
-import { IBarCodeLookupMachineContext } from "./BarcodeSearchMachine";
-import { useBarcodeLookupMachine } from "./useBarcodeSearch";
-import { IInputs } from "../../generated/ManifestTypes";
-import React = require("react");
+import {
+  IBarCodeLookupMachineContext,
+  ILookupValue,
+} from './BarcodeSearchMachine';
+import { useBarcodeLookupMachine } from './useBarcodeSearch';
+import { IInputs } from '../../generated/ManifestTypes';
+import React = require('react');
 import {
   IconButton,
   Label,
   mergeStyles,
   Stack,
   StackItem,
-} from "@fluentui/react";
-import { useRef, useEffect } from "react";
+} from '@fluentui/react';
+import { useRef, useEffect } from 'react';
 
 export interface BarcodeSearcherProps {
   context: ComponentFramework.Context<IInputs>;
@@ -28,14 +31,32 @@ export const BarcodeSearcher = (
     state.context.OnChange(returnValue);
   }, [state.context.selectedValue]);
 
+  useEffect(() => {
+    if (
+      state.context.pcfContext.parameters.barcodeLookupProperty.raw &&
+      state.context.pcfContext.parameters.barcodeLookupProperty.raw.length > 0
+    ) {
+      const currentValue =
+        state.context.pcfContext.parameters.barcodeLookupProperty.raw[0];
+      const lookupValue: ILookupValue = {
+        entityType: currentValue.entityType,
+        id: currentValue.id,
+        name: currentValue.name ?? '',
+      };
+      send({ type: 'SET-RECORD', data: [lookupValue] });
+    } else {
+      send({ type: 'SET-RECORD', data: undefined });
+    }
+  }, [state.context.pcfContext.parameters.barcodeLookupProperty]);
+
   const handleOnWebClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     send({
-      type: "SEARCH",
-      searchText: inputRef.current ? inputRef.current["value"] : "",
+      type: 'SEARCH',
+      searchText: inputRef.current ? inputRef.current['value'] : '',
     });
   };
   const handleOnMobileClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    send({ type: "SEARCH", searchText: "" });
+    send({ type: 'SEARCH', searchText: '' });
   };
   const handleOnClickSelectedItem = (e: React.MouseEvent<HTMLLabelElement>) => {
     const selectedItem = state.context.selectedValue;
@@ -48,61 +69,61 @@ export const BarcodeSearcher = (
   };
 
   const handleRemoveLookup = (e: React.MouseEvent<HTMLButtonElement>) => {
-    send({ type: "CLEAR-RECORD" });
+    send({ type: 'CLEAR-RECORD' });
   };
   const OnTextBoxEnter = (e: React.MouseEvent<HTMLInputElement>) => {
     e.currentTarget.setAttribute(
-      "placeholder",
-      e.type === "mouseenter" ? "Lookup for records" : "---"
+      'placeholder',
+      e.type === 'mouseenter' ? 'Lookup for records' : '---'
     );
   };
 
-  const isMobileApp = state.context.pcfContext.client.getClient() === "Mobile";
+  const isMobileApp = state.context.pcfContext.client.getClient() === 'Mobile';
 
   const inputRef = useRef(null);
   return (
     <>
       <div
         className={mergeStyles({
-          ":hover": { border: "solid 1px" },
-          ":hover .searchBtnCls": { visibility: "visible" },
-          ":hover .removeSelectedBtn": { visibility: "visible" },
-          marginLeft: "5px",
+          ':hover': { border: 'solid 1px' },
+          ':hover .searchBtnCls': { visibility: 'visible' },
+          ':hover .removeSelectedBtn': { visibility: 'visible' },
+          marginLeft: '5px',
         })}
       >
         {state.context.errorMessage && (
-          <Label className={mergeStyles({ color: "red" })}>
+          <Label className={mergeStyles({ color: 'red' })}>
             Error occurred while loading the component
           </Label>
         )}
         {!state.context.errorMessage && (
           <Stack
             horizontal={true}
-            className={mergeStyles({ maxWidth: "100%" })}
+            className={mergeStyles({ maxWidth: '100%' })}
           >
             {state.context.selectedValue && (
-              <StackItem grow={10} className={mergeStyles({ maxWidth: "80%" })}>
+              <StackItem grow={10} className={mergeStyles({ maxWidth: '80%' })}>
                 <Stack
                   horizontal={true}
-                  className={mergeStyles({ maxWidth: "100%" })}
+                  className={mergeStyles({ maxWidth: '100%' })}
                 >
                   <StackItem
                     grow={8}
-                    className={mergeStyles({ maxWidth: "80%" })}
+                    className={mergeStyles({ maxWidth: '80%' })}
                   >
                     <Label
                       onClick={handleOnClickSelectedItem}
                       className={mergeStyles({
                         fontWeight: 600,
-                        color: "rgb(17, 96, 183)",
-                        overflow: "hidden",
-                        padding: "2%",
-                        ":hover": {
-                          "text-decoration": "underline",
-                          cursor: "pointer",
+                        color: 'rgb(17, 96, 183)',
+                        overflow: 'hidden',
+                        padding: '2%',
+                        ':hover': {
+                          'text-decoration': 'underline',
+                          cursor: 'pointer',
                         },
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
                       })}
                       id={state.context.selectedValue.id}
                     >
@@ -111,7 +132,7 @@ export const BarcodeSearcher = (
                   </StackItem>
                   <StackItem grow={2}>
                     <IconButton
-                      iconProps={{ iconName: "Cancel" }}
+                      iconProps={{ iconName: 'Cancel' }}
                       onClick={handleRemoveLookup}
                       className="removeSelectedBtn"
                     ></IconButton>
@@ -126,9 +147,9 @@ export const BarcodeSearcher = (
                   type="text"
                   id="inputText"
                   className={mergeStyles({
-                    width: "95%",
-                    height: "85%",
-                    border: "none",
+                    width: '95%',
+                    height: '85%',
+                    border: 'none',
                   })}
                   ref={inputRef}
                   disabled={isMobileApp}
@@ -141,13 +162,18 @@ export const BarcodeSearcher = (
             <StackItem
               align="end"
               grow={1}
-              className={!isMobileApp ? "searchBtnCls" : ""}
+              className={!isMobileApp ? 'searchBtnCls' : ''}
             >
               <IconButton
                 iconProps={{
-                  iconName: isMobileApp ? "GenericScan" : "Search",
+                  iconName: isMobileApp ? 'GenericScan' : 'Search',
                 }}
-                className={mergeStyles({ color: "black",width:'100%', paddingLeft: "50%" ,':hover':{'background-color':'white'}})}
+                className={mergeStyles({
+                  color: 'black',
+                  width: '100%',
+                  paddingLeft: '50%',
+                  ':hover': { 'background-color': 'white' },
+                })}
                 onClick={isMobileApp ? handleOnMobileClick : handleOnWebClick}
               ></IconButton>
             </StackItem>
