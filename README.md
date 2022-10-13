@@ -78,3 +78,8 @@ Configuration can be passed to the control via control properties as shown below
 
 ![image](https://user-images.githubusercontent.com/22978615/195551755-9056dfca-f3f7-41a9-b3eb-0540738dbca9.png)
 </li>
+
+
+[Thanks to DavidXrm's LookupDropdown for the inspiration](https://github.com/drivardxrm/LookupDropdown.PCF)
+
+[Thanks to Statelyai's Xstate for the wonderful State machines](https://github.com/statelyai/xstate)
