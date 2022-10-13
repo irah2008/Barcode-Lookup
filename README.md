@@ -12,6 +12,13 @@ A PCF to use barcode scanner control to populate lookup field in Dynamics 365 mo
 <br>
 <br>
 
+## Releases
+
+Please download the releases [here](https://github.com/irah2008/Barcode-Lookup/releases)
+
+<br>
+<br>
+
 ## Sample Configuration
 
 Configuration can be passed to the control via control properties as shown below.
@@ -20,6 +27,8 @@ Configuration can be passed to the control via control properties as shown below
 
 <br>
 <br>
+
+
 
 ### Sample Configuration below
 
