@@ -9,6 +9,8 @@ export interface IBarCodeLookupMachineContext {
   OnChange: (value?: ComponentFramework.LookupValue[]) => void;
   searchFilter?: string;
   errorMessage?: string;
+  disabled:boolean;
+  masked:boolean;
 }
 
 export interface ILookupValue {

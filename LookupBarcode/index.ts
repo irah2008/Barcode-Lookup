@@ -36,9 +36,22 @@ export class LookupBarcode
     this._notifyOutputChanged = notifyOutputChanged;
     this._root = createRoot(container!);
 
+    // If the form is diabled because it is inactive or the user doesn't have access
+    // isControlDisabled is set to true
+    let readOnly = context.mode.isControlDisabled;
+    // When a field has FLS enabled, the security property on the attribute parameter is set
+    let masked = false;
+    if (context.parameters.barcodeLookupProperty.security) {
+      readOnly =
+        readOnly || !context.parameters.barcodeLookupProperty.security.editable;
+      masked = !context.parameters.barcodeLookupProperty.security.readable;
+    }
+
     this._barCodesearcherContext = {
       pcfContext: context,
       OnChange: this.onChange,
+      disabled: readOnly,
+      masked: masked,
     };
   }
 

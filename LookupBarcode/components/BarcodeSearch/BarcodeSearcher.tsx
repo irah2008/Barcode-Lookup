@@ -96,12 +96,15 @@ export const BarcodeSearcher = (
             Error occurred while loading the component
           </Label>
         )}
-        {!state.context.errorMessage && (
+        {state.context.masked && (
+          <Label className={mergeStyles({ color: 'grey' })}>********</Label>
+        )}
+        {!state.context.errorMessage && !state.context.masked && (
           <Stack
             horizontal={true}
             className={mergeStyles({ maxWidth: '100%' })}
           >
-            {state.context.selectedValue && (
+            {(state.context.selectedValue || state.context.disabled) && (
               <StackItem grow={10} className={mergeStyles({ maxWidth: '80%' })}>
                 <Stack
                   horizontal={true}
@@ -125,23 +128,25 @@ export const BarcodeSearcher = (
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                       })}
-                      id={state.context.selectedValue.id}
+                      id={state.context.selectedValue?.id}
                     >
-                      {state.context.selectedValue.name}
+                      {state.context.selectedValue?.name}
                     </Label>
                   </StackItem>
                   <StackItem grow={2}>
-                    <IconButton
-                      iconProps={{ iconName: 'Cancel' }}
-                      onClick={handleRemoveLookup}
-                      className="removeSelectedBtn"
-                    ></IconButton>
+                    {!state.context.disabled && (
+                      <IconButton
+                        iconProps={{ iconName: 'Cancel' }}
+                        onClick={handleRemoveLookup}
+                        className="removeSelectedBtn"
+                      ></IconButton>
+                    )}
                   </StackItem>
                 </Stack>
               </StackItem>
             )}
 
-            {!state.context.selectedValue && (
+            {!state.context.selectedValue && !state.context.disabled && (
               <StackItem grow={10}>
                 <input
                   type="text"
@@ -159,24 +164,26 @@ export const BarcodeSearcher = (
                 />
               </StackItem>
             )}
-            <StackItem
-              align="end"
-              grow={1}
-              className={!isMobileApp ? 'searchBtnCls' : ''}
-            >
-              <IconButton
-                iconProps={{
-                  iconName: isMobileApp ? 'GenericScan' : 'Search',
-                }}
-                className={mergeStyles({
-                  color: 'black',
-                  width: '100%',
-                  paddingLeft: '50%',
-                  ':hover': { 'background-color': 'white' },
-                })}
-                onClick={isMobileApp ? handleOnMobileClick : handleOnWebClick}
-              ></IconButton>
-            </StackItem>
+            {!state.context.disabled && (
+              <StackItem
+                align="end"
+                grow={1}
+                className={!isMobileApp ? 'searchBtnCls' : ''}
+              >
+                <IconButton
+                  iconProps={{
+                    iconName: isMobileApp ? 'GenericScan' : 'Search',
+                  }}
+                  className={mergeStyles({
+                    color: 'black',
+                    width: '100%',
+                    paddingLeft: '50%',
+                    ':hover': { 'background-color': 'white' },
+                  })}
+                  onClick={isMobileApp ? handleOnMobileClick : handleOnWebClick}
+                ></IconButton>
+              </StackItem>
+            )}
           </Stack>
         )}
       </div>
