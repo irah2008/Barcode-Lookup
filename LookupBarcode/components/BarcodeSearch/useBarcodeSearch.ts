@@ -7,6 +7,35 @@ import {
 import { useMachine } from '@xstate/react';
 import { assign } from 'xstate';
 import { send } from 'xstate/lib/actions';
+import { IInputs } from '../../generated/ManifestTypes';
+
+export const OpenLookupObjects = async (
+  entityName: string,
+  defaultViewId: string,
+  viewIds: string,
+  pcfContext: ComponentFramework.Context<IInputs>,
+  searchText: string
+): Promise<ILookupValue[]> => {
+  const returnValuefromLookup = await pcfContext.utils.lookupObjects({
+    allowMultiSelect: false,
+    defaultEntityType: entityName,
+    defaultViewId: defaultViewId,
+    entityTypes: [entityName],
+    viewIds: [viewIds],
+    //@ts-ignore
+    searchText: searchText,
+  });
+  if (returnValuefromLookup.length > 0) {
+    return returnValuefromLookup.map((x) => {
+      return {
+        entityType: x.entityType,
+        name: x.name ?? '',
+        id: x.id,
+      };
+    });
+  }
+  return [];
+};
 
 export const useBarcodeLookupMachine = (
   initialContext: IBarCodeLookupMachineContext
@@ -50,15 +79,13 @@ export const useBarcodeLookupMachine = (
       },
       OpenLookupControl: (ctx, e) => {
         if (ctx.lookupProps) {
-          initialContext.pcfContext.utils.lookupObjects({
-            allowMultiSelect: false,
-            defaultEntityType: ctx.lookupProps.entityName,
-            defaultViewId: ctx.lookupProps.defaultviewId,
-            entityTypes: [ctx.lookupProps.entityName],
-            viewIds: [],
-            //@ts-ignore
-            searchText: ctx.searchFilter,
-          });
+          OpenLookupObjects(
+            ctx.lookupProps.entityName,
+            ctx.lookupProps.defaultviewId,
+            ctx.lookupProps.entityName,
+            ctx.pcfContext,
+            ctx.searchFilter ?? ''
+          );
         }
       },
       setContextError: assign({
@@ -102,33 +129,31 @@ export const useBarcodeLookupMachine = (
                 lookupProps.entityName,
                 `?$select=${lookupProps.nameColumn}&$filter=contains(${lookupProps.fieldtoSearch},'${searchText}')`
               );
-            returnValue = retrievedEntities.entities.map((x) => {
-              return {
-                entityType: lookupProps.entityName,
-                name: lookupProps ? x[lookupProps.nameColumn] : "",
-                id: x[`${lookupProps.entityName}id`]
-              };
-            });
-          } else {
-            const returnValuefromLookup =
-              await ctx.pcfContext.utils.lookupObjects({
-                allowMultiSelect: false,
-                defaultEntityType: ctx.lookupProps?.entityName ?? '',
-                defaultViewId: ctx.lookupProps?.defaultviewId ?? '',
-                entityTypes: [ctx.lookupProps?.entityName ?? ''],
-                viewIds: [ctx.lookupProps?.defaultviewId ?? ''],
-                //@ts-ignore
-                searchText: e.searchText ?? '',
-              });
-            if (returnValuefromLookup.length > 0) {
-              returnValue = returnValuefromLookup.map((x) => {
+            if (retrievedEntities.entities.length > 0) {
+              returnValue = retrievedEntities.entities.map((x) => {
                 return {
-                  entityType: x.entityType,
-                  name: x.name ?? '',
-                  id: x.id,
+                  entityType: lookupProps.entityName,
+                  name: lookupProps ? x[lookupProps.nameColumn] : '',
+                  id: x[`${lookupProps.entityName}id`],
                 };
               });
+            } else {
+              return await OpenLookupObjects(
+                lookupProps.entityName,
+                lookupProps.defaultviewId,
+                lookupProps.defaultviewId,
+                pcfContext,
+                searchText
+              );
             }
+          } else {
+            return await OpenLookupObjects(
+              lookupProps.entityName,
+              lookupProps.defaultviewId,
+              lookupProps.defaultviewId,
+              pcfContext,
+              e.searchText
+            );
           }
         }
         return returnValue;
